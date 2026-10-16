@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8002:8000"
+    volumes:
+      - type: bind
+        source: ./runtime
+        target: /app/runtime
+        read_only: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: "no"

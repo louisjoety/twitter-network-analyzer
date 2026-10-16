@@ -1,0 +1,19 @@
+{
+  "blank_lines": 0,
+  "duplicate_edges_removed": 657994,
+  "elapsed_seconds": 78.23,
+  "generated_at": "2026-10-16T15:26:39.391714+00:00",
+  "invalid_lines": 0,
+  "raw_lines": 2426143,
+  "spark_master": "custom:emr-serverless",
+  "spark_version": "4.0.2-amzn-0",
+  "total_followees": 1768149,
+  "total_followers": 1768149,
+  "unique_edges": 1768149,
+  "users": 81306,
+  "valid_edges": 2426143,
+  "mode": "emr",
+  "region": "ap-southeast-2",
+  "job_run_id": "00g9iqgvp7fp282b",
+  "application_id": "00g9iq66adh8au29"
+}

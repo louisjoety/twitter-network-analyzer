@@ -1,0 +1,10 @@
+{
+  "region": "ap-southeast-2",
+  "bucket": "YOUR_BUCKET_NAME",
+  "application_id": "YOUR_EMR_SERVERLESS_APPLICATION_ID",
+  "execution_role_arn": "arn:aws:iam::123456789012:role/YOUR_EMR_JOB_ROLE",
+  "input_key": "input/twitter_combined.txt",
+  "script_key": "scripts/analysis.py",
+  "output_prefix": "output",
+  "logs_prefix": "logs"
+}

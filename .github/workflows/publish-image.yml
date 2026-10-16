@@ -1,0 +1,39 @@
+name: Publish container (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    # A manually requested image release from the default branch only.
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and test the release image
+        run: |
+          docker build -t twitter-network-analyzer:release .
+          docker run -d --rm --name twitter-network-analyzer-release -p 127.0.0.1:8000:8000 twitter-network-analyzer:release --demo
+          trap 'docker logs twitter-network-analyzer-release; docker stop twitter-network-analyzer-release' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/api/health; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8000/ > /dev/null
+          python3 -c "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8000/api/users/200')); assert d['followers'] == 2 and d['followees'] == 2"
+      - name: Publish commit-tagged image to GitHub Container Registry
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT: ${{ github.sha }}
+        run: |
+          image="ghcr.io/${REPOSITORY,,}"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
+          docker tag twitter-network-analyzer:release "$image:$COMMIT"
+          docker push "$image:$COMMIT"
+          echo "Published $image:$COMMIT" >> "$GITHUB_STEP_SUMMARY"
